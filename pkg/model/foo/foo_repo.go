@@ -1,4 +1,4 @@
-package model
+package foo
 
 type FooRepository struct {
 	fooMap map[int]*Foo

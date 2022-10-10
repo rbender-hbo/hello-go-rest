@@ -1,4 +1,4 @@
-package model
+package foo
 
 type Foo struct {
 	FooId int

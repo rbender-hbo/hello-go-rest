@@ -1,4 +1,4 @@
-package model
+package foo
 
 import (
 	"testing"
