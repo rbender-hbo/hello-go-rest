@@ -28,3 +28,19 @@ func TestFooRepoFindByIdNotFound(t *testing.T) {
 	assert.Equal(t, ok, false)
 	assert.Nil(t, foo)
 }
+
+func TestFooRepoFindAll(t *testing.T) {
+
+	foo1 := NewFoo(1, "FooOne")
+	foo2 := NewFoo(2, "FooTwo")
+	foo3 := NewFoo(3, "FooThree")
+
+	repo := NewFooRepository()
+	repo.Save(foo1)
+	repo.Save(foo2)
+	repo.Save(foo3)
+
+	allFoo := repo.FindAll()
+
+	assert.Equal(t, 3, len(allFoo))
+}
