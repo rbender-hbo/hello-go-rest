@@ -8,6 +8,8 @@ import (
 	"strconv"
 
 	"hello-go-rest/pkg/model/foo"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type FooHandler struct {
@@ -47,7 +49,8 @@ func (handler *FooHandler) FooByIdHandler(writer http.ResponseWriter, request *h
 }
 
 func (handler *FooHandler) extractId(request *http.Request) (fooId int, err error) {
-	id := request.URL.Path[len("/foo/"):]
+	//id := request.URL.Path[len("/foo/"):]
+	id := chi.URLParam(request, "fooId")
 	log.Printf("Extract ID %s", id)
 
 	fooId, err = strconv.Atoi(id)
