@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"hello-go-rest/pkg/model/foo"
+	"hello-go-rest/pkg/server"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -16,19 +17,19 @@ type FooHandler struct {
 	fooRepository *foo.FooRepository
 }
 
-func NewFooHandler(fooRepository *foo.FooRepository) *FooHandler {
+func NewFooHandler(app *server.Application) *FooHandler {
 	handler := new(FooHandler)
-	handler.fooRepository = fooRepository
+	handler.fooRepository = app.FooRepository
 	return handler
 }
 
-func (handler *FooHandler) AllFooHandler(writer http.ResponseWriter, request *http.Request) {
+func (handler *FooHandler) GetAllFooHandler(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 	allFoo := handler.fooRepository.FindAll()
 	serializeToJson(writer, allFoo)
 }
 
-func (handler *FooHandler) FooByIdHandler(writer http.ResponseWriter, request *http.Request) {
+func (handler *FooHandler) GetFooByIdHandler(writer http.ResponseWriter, request *http.Request) {
 
 	fooId, err := handler.extractId(request)
 	if err != nil {

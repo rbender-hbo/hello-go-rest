@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"hello-go-rest/pkg/handler"
-	"hello-go-rest/pkg/model/foo"
+	"hello-go-rest/pkg/server"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -13,12 +13,9 @@ import (
 
 func main() {
 
-	fooRepository := foo.NewFooRepository()
-	fooRepository.Save(foo.NewFoo(1, "FooOne"))
-	fooRepository.Save(foo.NewFoo(2, "FooTwo"))
-	fooRepository.Save(foo.NewFoo(3, "FooThree"))
+	app := server.BuildApplication()
 
-	fooHandler := handler.NewFooHandler(fooRepository)
+	fooHandler := handler.NewFooHandler(app)
 
 	router := chi.NewRouter()
 
@@ -28,20 +25,20 @@ func main() {
 	router.Get("/", handler.HelloWorldHandler)
 
 	router.Route("/foo", func(router chi.Router) {
-		router.Get("/", fooHandler.AllFooHandler)
+		router.Get("/", fooHandler.GetAllFooHandler)
 
 		router.Route("/{fooId}", func(router chi.Router) {
-			router.Get("/", fooHandler.FooByIdHandler)
+			router.Get("/", fooHandler.GetFooByIdHandler)
 		})
 	})
-
-	//http.HandleFunc("/", handler.HelloWorldHandler)
-	//http.HandleFunc("/foo", fooHandler.AllFooHandler)
-	//http.HandleFunc("/foo/", fooHandler.FooByIdHandler)
 
 	log.Println("Starting server :8080")
 	err := http.ListenAndServe(":8080", router)
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func BuildApplication() {
+	panic("unimplemented")
 }
