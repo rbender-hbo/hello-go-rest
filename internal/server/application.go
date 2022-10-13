@@ -7,7 +7,7 @@ TODO: Replace with real Dependency Injection framework (dig, wire, etc)
 */
 
 import (
-	"hello-go-rest/pkg/model/foo"
+	"hello-go-rest/internal/model/foo"
 )
 
 type Application struct {

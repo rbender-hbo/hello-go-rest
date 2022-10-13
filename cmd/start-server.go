@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"hello-go-rest/pkg/handler"
-	"hello-go-rest/pkg/server"
+	"hello-go-rest/internal/handler"
+	"hello-go-rest/internal/server"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

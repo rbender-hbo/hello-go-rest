@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"hello-go-rest/pkg/model/foo"
-	"hello-go-rest/pkg/server"
+	"hello-go-rest/internal/model/foo"
+	"hello-go-rest/internal/server"
 
 	"github.com/go-chi/chi/v5"
 )
