@@ -24,7 +24,6 @@ func NewFooHandler(app *server.Application) *FooHandler {
 }
 
 func (handler *FooHandler) GetAllFooHandler(writer http.ResponseWriter, request *http.Request) {
-	writer.Header().Set("Content-Type", "application/json")
 	allFoo := handler.fooRepository.FindAll()
 	serializeToJson(writer, allFoo)
 }
@@ -50,7 +49,6 @@ func (handler *FooHandler) GetFooByIdHandler(writer http.ResponseWriter, request
 }
 
 func (handler *FooHandler) extractId(request *http.Request) (fooId int, err error) {
-	//id := request.URL.Path[len("/foo/"):]
 	id := chi.URLParam(request, "fooId")
 	log.Printf("Extract ID %s", id)
 
@@ -59,5 +57,6 @@ func (handler *FooHandler) extractId(request *http.Request) (fooId int, err erro
 }
 
 func serializeToJson(writer http.ResponseWriter, data interface{}) {
+	writer.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(writer).Encode(data)
 }

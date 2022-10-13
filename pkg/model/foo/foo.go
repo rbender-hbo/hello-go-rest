@@ -1,8 +1,8 @@
 package foo
 
 type Foo struct {
-	FooId int
-	Name  string
+	FooId int    `json:"fooId"`
+	Name  string `json:"name"`
 }
 
 func NewFoo(fooId int, name string) *Foo {

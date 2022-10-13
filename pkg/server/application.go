@@ -1,5 +1,11 @@
 package server
 
+/*
+Data structure to hold various objects that can be injected into each other.
+
+TODO: Replace with real Dependency Injection framework (dig, wire, etc)
+*/
+
 import (
 	"hello-go-rest/pkg/model/foo"
 )
