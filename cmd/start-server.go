@@ -38,7 +38,3 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
-func BuildApplication() {
-	panic("unimplemented")
-}
