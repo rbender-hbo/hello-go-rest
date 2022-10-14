@@ -1,5 +1,9 @@
 package foo
 
+import (
+	log "github.com/sirupsen/logrus"
+)
+
 type FooRepository struct {
 	fooMap map[int]*Foo
 	nextId int
@@ -13,6 +17,7 @@ func NewFooRepository() *FooRepository {
 }
 
 func (fooRepo *FooRepository) Save(foo *Foo) {
+	log.WithFields(log.Fields{"foo": foo}).Info("Save Foo")
 	if foo.FooId >= fooRepo.nextId {
 		fooRepo.nextId = foo.FooId + 1
 	}
@@ -24,6 +29,7 @@ func (fooRepo *FooRepository) Save(foo *Foo) {
 
 func (fooRepo *FooRepository) generateId() int {
 	id := fooRepo.nextId
+	log.WithFields(log.Fields{"id": id}).Debug("Generate new fooId")
 	fooRepo.nextId++
 	return id
 }

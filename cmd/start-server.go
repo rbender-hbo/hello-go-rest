@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
 	"hello-go-rest/internal/handler"
@@ -9,6 +8,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
