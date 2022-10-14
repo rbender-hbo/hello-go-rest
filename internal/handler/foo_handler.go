@@ -14,6 +14,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// Used for parsing POST/PUT JSON (no ID field)
+type FooRequest struct {
+	Name string `json:"name"`
+}
+
 type FooHandler struct {
 	fooRepository *foo.FooRepository
 }
@@ -38,32 +43,51 @@ func (handler *FooHandler) GetFooByIdHandler(writer http.ResponseWriter, request
 		return
 	}
 
-	log.Debug("Load Foo with ID %d", fooId)
+	log.Debugf("Load Foo with ID %d", fooId)
 
-	foo, ok := handler.fooRepository.FindById(fooId)
+	foo, ok := handler.findFooById(writer, fooId)
 	if !ok {
-		errorMessage := fmt.Sprintf("Foo %d not found", fooId)
-		log.Error(errorMessage)
-		http.Error(writer, errorMessage, 404)
 		return
 	}
 
 	serializeToJson(writer, foo)
 }
 
-func (handler *FooHandler) PostFoo(writer http.ResponseWriter, request *http.Request) {
-	var newFoo foo.Foo
+func (handler *FooHandler) PostFooHandler(writer http.ResponseWriter, request *http.Request) {
+	fooRequest, err := handler.parseFooRequest(writer, request)
 
-	err := json.NewDecoder(request.Body).Decode(&newFoo)
 	if err != nil {
-		log.WithFields(log.Fields{"err":err}).Error("Unable to parse JSON")
-		http.Error(writer, err.Error(), 400)
 		return
 	}
 
-	handler.fooRepository.Save(&newFoo)
+	newFoo := foo.NewFoo(fooRequest.Name)
+	handler.fooRepository.Save(newFoo)
 
-	serializeToJson(writer, &newFoo)
+	serializeToJson(writer, newFoo)
+}
+
+func (handler *FooHandler) PutFooHandler(writer http.ResponseWriter, request *http.Request) {
+	fooRequest, err := handler.parseFooRequest(writer, request)
+
+	if err != nil {
+		return
+	}
+
+	fooId, err := handler.extractId(request)
+	if (err != nil) {
+		return
+	}
+
+	existingFoo, ok := handler.findFooById(writer, fooId)
+	if !ok {
+		return
+	}
+
+	existingFoo.Name = fooRequest.Name
+
+	handler.fooRepository.Save(existingFoo)
+
+	serializeToJson(writer, &existingFoo)
 }
 
 func (handler *FooHandler) extractId(request *http.Request) (fooId int, err error) {
@@ -72,6 +96,32 @@ func (handler *FooHandler) extractId(request *http.Request) (fooId int, err erro
 
 	fooId, err = strconv.Atoi(id)
 	return fooId, err
+}
+
+func (handler *FooHandler) parseFooRequest(writer http.ResponseWriter, request *http.Request) (*FooRequest, error) {
+
+	var fooRequest FooRequest
+
+	err := json.NewDecoder(request.Body).Decode(&fooRequest)
+	if err != nil {
+		log.WithFields(log.Fields{"err": err}).Error("Unable to parse JSON")
+		http.Error(writer, err.Error(), 400)
+		return nil, err
+	}
+
+	return &fooRequest, nil
+}
+
+func (handler *FooHandler) findFooById(writer http.ResponseWriter, fooId int) (*foo.Foo, bool) {
+	foo, ok := handler.fooRepository.FindById(fooId)
+	if !ok {
+		errorMessage := fmt.Sprintf("Foo %d not found", fooId)
+		log.Error(errorMessage)
+		http.Error(writer, errorMessage, 404)
+		return nil, false
+	}
+
+	return foo, true
 }
 
 func serializeToJson(writer http.ResponseWriter, data interface{}) {
