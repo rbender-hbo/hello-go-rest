@@ -26,6 +26,7 @@ func main() {
 
 	router.Route("/foo", func(router chi.Router) {
 		router.Get("/", fooHandler.GetAllFooHandler)
+		router.Post("/", fooHandler.PostFoo)
 
 		router.Route("/{fooId}", func(router chi.Router) {
 			router.Get("/", fooHandler.GetFooByIdHandler)

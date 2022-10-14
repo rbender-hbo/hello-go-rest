@@ -25,9 +25,9 @@ func BuildApplication() *Application {
 func buildFooRepository() *foo.FooRepository {
 	fooRepository := foo.NewFooRepository()
 
-	fooRepository.Save(foo.NewFoo(1, "FooOne"))
-	fooRepository.Save(foo.NewFoo(2, "FooTwo"))
-	fooRepository.Save(foo.NewFoo(3, "FooThree"))
+	fooRepository.Save(foo.NewFooWithId(1, "FooOne"))
+	fooRepository.Save(foo.NewFooWithId(2, "FooTwo"))
+	fooRepository.Save(foo.NewFooWithId(3, "FooThree"))
 
 	return fooRepository
 }

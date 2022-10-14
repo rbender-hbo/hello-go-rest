@@ -48,6 +48,20 @@ func (handler *FooHandler) GetFooByIdHandler(writer http.ResponseWriter, request
 	serializeToJson(writer, foo)
 }
 
+func (handler *FooHandler) PostFoo(writer http.ResponseWriter, request *http.Request) {
+	var newFoo foo.Foo
+
+	err := json.NewDecoder(request.Body).Decode(&newFoo)
+	if err != nil {
+		http.Error(writer, err.Error(), 400)
+		return
+	}
+
+	handler.fooRepository.Save(&newFoo)
+
+	serializeToJson(writer, &newFoo)
+}
+
 func (handler *FooHandler) extractId(request *http.Request) (fooId int, err error) {
 	id := chi.URLParam(request, "fooId")
 	log.Printf("Extract ID %s", id)

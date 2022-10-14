@@ -2,16 +2,30 @@ package foo
 
 type FooRepository struct {
 	fooMap map[int]*Foo
+	nextId int
 }
 
 func NewFooRepository() *FooRepository {
 	repo := new(FooRepository)
 	repo.fooMap = make(map[int]*Foo)
+	repo.nextId = 1
 	return repo
 }
 
 func (fooRepo *FooRepository) Save(foo *Foo) {
+	if foo.FooId >= fooRepo.nextId {
+		fooRepo.nextId = foo.FooId + 1
+	}
+	if foo.FooId == 0 {
+		foo.FooId = fooRepo.generateId()
+	}
 	fooRepo.fooMap[foo.FooId] = foo
+}
+
+func (fooRepo *FooRepository) generateId() int {
+	id := fooRepo.nextId
+	fooRepo.nextId++
+	return id
 }
 
 func (fooRepo *FooRepository) FindAll() []*Foo {

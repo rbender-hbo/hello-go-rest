@@ -6,17 +6,52 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFooRepoSave(t *testing.T) {
+func TestFooRepoSaveWithExistingId(t *testing.T) {
 
 	repo := NewFooRepository()
 
-	foo := NewFoo(1, "FooOne")
+	foo := NewFooWithId(1, "FooOne")
 	repo.Save(foo)
+
+	assert.Equal(t, 1, foo.FooId)
 
 	foo2, ok := repo.FindById(1)
 
 	assert.Equal(t, ok, true)
 	assert.Equal(t, foo, foo2)
+}
+
+func TestFooRepoSaveWithoutId(t *testing.T) {
+
+	repo := NewFooRepository()
+
+	foo := NewFoo("FooOne")
+	repo.Save(foo)
+
+	assert.Equal(t, 1, foo.FooId)
+
+	foo2, ok := repo.FindById(1)
+
+	assert.Equal(t, ok, true)
+	assert.Equal(t, foo, foo2)
+}
+
+func TestFooRepoSaveWithoutIdAfterSavingWithId(t *testing.T) {
+
+	repo := NewFooRepository()
+
+	foo1 := NewFooWithId(3, "FooThree")
+	repo.Save(foo1)
+
+	foo2 := NewFoo("FooFour")
+	repo.Save(foo2)
+
+	assert.Equal(t, 4, foo2.FooId)
+
+	foundFoo, ok := repo.FindById(4)
+
+	assert.Equal(t, ok, true)
+	assert.Equal(t, foundFoo, foo2)
 }
 
 func TestFooRepoFindByIdNotFound(t *testing.T) {
@@ -31,9 +66,9 @@ func TestFooRepoFindByIdNotFound(t *testing.T) {
 
 func TestFooRepoFindAll(t *testing.T) {
 
-	foo1 := NewFoo(1, "FooOne")
-	foo2 := NewFoo(2, "FooTwo")
-	foo3 := NewFoo(3, "FooThree")
+	foo1 := NewFooWithId(1, "FooOne")
+	foo2 := NewFooWithId(2, "FooTwo")
+	foo3 := NewFooWithId(3, "FooThree")
 
 	repo := NewFooRepository()
 	repo.Save(foo1)
