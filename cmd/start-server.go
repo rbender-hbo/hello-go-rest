@@ -26,12 +26,12 @@ func main() {
 	router.Get("/", handler.HelloWorldHandler)
 
 	router.Route("/foo", func(router chi.Router) {
-		router.Get("/", fooHandler.GetAllFooHandler)
-		router.Post("/", fooHandler.PostFooHandler)
+		router.Get("/", fooHandler.GetAllFoo)
+		router.Post("/", fooHandler.PostFoo)
 
 		router.Route("/{fooId}", func(router chi.Router) {
-			router.Get("/", fooHandler.GetFooByIdHandler)
-			router.Put("/", fooHandler.PutFooHandler)
+			router.Get("/", fooHandler.GetFooById)
+			router.Put("/", fooHandler.PutFoo)
 		})
 	})
 

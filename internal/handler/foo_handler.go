@@ -29,17 +29,16 @@ func NewFooHandler(app *server.Application) *FooHandler {
 	return handler
 }
 
-func (handler *FooHandler) GetAllFooHandler(writer http.ResponseWriter, request *http.Request) {
+func (handler *FooHandler) GetAllFoo(writer http.ResponseWriter, request *http.Request) {
 	log.Debug("GetAllFoo")
 	allFoo := handler.fooRepository.FindAll()
 	serializeToJson(writer, allFoo)
 }
 
-func (handler *FooHandler) GetFooByIdHandler(writer http.ResponseWriter, request *http.Request) {
+func (handler *FooHandler) GetFooById(writer http.ResponseWriter, request *http.Request) {
 
-	fooId, err := handler.extractId(request)
+	fooId, err := handler.extractId(writer, request)
 	if err != nil {
-		http.Error(writer, err.Error(), 400)
 		return
 	}
 
@@ -53,7 +52,7 @@ func (handler *FooHandler) GetFooByIdHandler(writer http.ResponseWriter, request
 	serializeToJson(writer, foo)
 }
 
-func (handler *FooHandler) PostFooHandler(writer http.ResponseWriter, request *http.Request) {
+func (handler *FooHandler) PostFoo(writer http.ResponseWriter, request *http.Request) {
 	fooRequest, err := handler.parseFooRequest(writer, request)
 
 	if err != nil {
@@ -66,14 +65,14 @@ func (handler *FooHandler) PostFooHandler(writer http.ResponseWriter, request *h
 	serializeToJson(writer, newFoo)
 }
 
-func (handler *FooHandler) PutFooHandler(writer http.ResponseWriter, request *http.Request) {
+func (handler *FooHandler) PutFoo(writer http.ResponseWriter, request *http.Request) {
 	fooRequest, err := handler.parseFooRequest(writer, request)
 
 	if err != nil {
 		return
 	}
 
-	fooId, err := handler.extractId(request)
+	fooId, err := handler.extractId(writer, request)
 	if (err != nil) {
 		return
 	}
@@ -90,11 +89,16 @@ func (handler *FooHandler) PutFooHandler(writer http.ResponseWriter, request *ht
 	serializeToJson(writer, &existingFoo)
 }
 
-func (handler *FooHandler) extractId(request *http.Request) (fooId int, err error) {
+func (handler *FooHandler) extractId(writer http.ResponseWriter, request *http.Request) (fooId int, err error) {
 	id := chi.URLParam(request, "fooId")
 	log.Printf("Extract ID %s", id)
 
 	fooId, err = strconv.Atoi(id)
+	if (err != nil) {
+		errorMessage := fmt.Sprintf("Unable to parse id %s", id)
+		log.WithFields(log.Fields{"err": err}).Error(errorMessage)
+		http.Error(writer, errorMessage, 400)
+	}
 	return fooId, err
 }
 
