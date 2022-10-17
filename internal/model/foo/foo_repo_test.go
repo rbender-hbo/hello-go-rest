@@ -8,7 +8,7 @@ import (
 
 func TestFooRepoSaveWithExistingId(t *testing.T) {
 
-	repo := NewFooRepository()
+	repo := NewInMemoryFooRepository()
 
 	foo := NewFooWithId(1, "FooOne")
 	repo.Save(foo)
@@ -25,7 +25,8 @@ func TestFooRepoSaveWithExistingId(t *testing.T) {
 
 func TestFooRepoSaveWithoutId(t *testing.T) {
 
-	repo := NewFooRepository()
+	//repo := NewInMemoryFooRepository()
+	var repo FooRepository = NewInMemoryFooRepository()
 
 	foo := NewFoo("FooOne")
 	repo.Save(foo)
@@ -40,7 +41,7 @@ func TestFooRepoSaveWithoutId(t *testing.T) {
 
 func TestFooRepoSaveWithoutIdAfterSavingWithId(t *testing.T) {
 
-	repo := NewFooRepository()
+	repo := NewInMemoryFooRepository()
 
 	foo1 := NewFooWithId(3, "FooThree")
 	repo.Save(foo1)
@@ -58,7 +59,7 @@ func TestFooRepoSaveWithoutIdAfterSavingWithId(t *testing.T) {
 
 func TestFooRepoFindByIdNotFound(t *testing.T) {
 
-	repo := NewFooRepository()
+	repo := NewInMemoryFooRepository()
 
 	foo, ok := repo.FindById(1)
 
@@ -72,7 +73,7 @@ func TestFooRepoFindAll(t *testing.T) {
 	foo2 := NewFooWithId(2, "FooTwo")
 	foo3 := NewFooWithId(3, "FooThree")
 
-	repo := NewFooRepository()
+	repo := NewInMemoryFooRepository()
 	repo.Save(foo1)
 	repo.Save(foo2)
 	repo.Save(foo3)

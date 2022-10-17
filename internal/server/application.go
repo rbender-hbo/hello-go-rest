@@ -11,7 +11,7 @@ import (
 )
 
 type Application struct {
-	FooRepository *foo.FooRepository
+	FooRepository foo.FooRepository
 }
 
 func BuildApplication() *Application {
@@ -22,8 +22,8 @@ func BuildApplication() *Application {
 	return app
 }
 
-func buildFooRepository() *foo.FooRepository {
-	fooRepository := foo.NewFooRepository()
+func buildFooRepository() foo.FooRepository {
+	fooRepository := foo.NewInMemoryFooRepository()
 
 	fooRepository.Save(foo.NewFooWithId(1, "FooOne"))
 	fooRepository.Save(foo.NewFooWithId(2, "FooTwo"))

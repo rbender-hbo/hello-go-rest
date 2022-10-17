@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"hello-go-rest/internal/model/foo"
-	"hello-go-rest/internal/server"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
@@ -21,11 +20,11 @@ func TestFooHandlerGetAllFoo(t *testing.T) {
 
 	recorder := httptest.NewRecorder()
 
-	application := buildTestApplication()
-	foo1, _ := application.FooRepository.FindById(1)
-	foo2, _ := application.FooRepository.FindById(2)
+	fooRepository := buildFooRepository()
+	foo1, _ := fooRepository.FindById(1)
+	foo2, _ := fooRepository.FindById(2)
 
-	fooHandler := NewFooHandler(application)
+	fooHandler := NewFooHandler(fooRepository)
 	handler := http.HandlerFunc(fooHandler.GetAllFoo)
 
 	handler.ServeHTTP(recorder, req)
@@ -47,10 +46,10 @@ func TestFooHandlerGetFooById(t *testing.T) {
 
 	recorder := httptest.NewRecorder()
 
-	application := buildTestApplication()
-	foo1, _ := application.FooRepository.FindById(1)
+	fooRepository := buildFooRepository()
+	foo1, _ := fooRepository.FindById(1)
 
-	fooHandler := NewFooHandler(application)
+	fooHandler := NewFooHandler(fooRepository)
 	handler := http.HandlerFunc(fooHandler.GetFooById)
 
 	handler.ServeHTTP(recorder, req)
@@ -68,8 +67,7 @@ func TestFooHandlerGetFooByIdReturns404WhenNotFound(t *testing.T) {
 
 	recorder := httptest.NewRecorder()
 
-	application := buildTestApplication()
-	fooHandler := NewFooHandler(application)
+	fooHandler := buildFooHandler()
 	handler := http.HandlerFunc(fooHandler.GetFooById)
 
 	handler.ServeHTTP(recorder, req)
@@ -84,8 +82,8 @@ func TestFooHandlerPostFoo(t *testing.T) {
 
 	recorder := httptest.NewRecorder()
 
-	application := buildTestApplication()
-	fooHandler := NewFooHandler(application)
+	fooRepository := buildFooRepository()
+	fooHandler := NewFooHandler(fooRepository)
 	handler := http.HandlerFunc(fooHandler.PostFoo)
 
 	handler.ServeHTTP(recorder, req)
@@ -93,7 +91,7 @@ func TestFooHandlerPostFoo(t *testing.T) {
 	assert.Equal(t, 200, recorder.Code)
 
 	parsedFoo := parseFoo(t, recorder)
-	assert.Equal(t, application.FooRepository.LatestFoo.FooId, parsedFoo.FooId)
+	assert.Equal(t, fooRepository.LatestFoo.FooId, parsedFoo.FooId)
 	assert.Equal(t, "PostFoo", parsedFoo.Name)
 }
 
@@ -105,8 +103,7 @@ func TestFooHandlerPutFoo(t *testing.T) {
 
 	recorder := httptest.NewRecorder()
 
-	application := buildTestApplication()
-	fooHandler := NewFooHandler(application)
+	fooHandler := buildFooHandler()
 	handler := http.HandlerFunc(fooHandler.PutFoo)
 
 	handler.ServeHTTP(recorder, req)
@@ -126,8 +123,7 @@ func TestFooHandlerPutFooReturns404WhenNotFound(t *testing.T) {
 
 	recorder := httptest.NewRecorder()
 
-	application := buildTestApplication()
-	fooHandler := NewFooHandler(application)
+	fooHandler := buildFooHandler()
 	handler := http.HandlerFunc(fooHandler.PutFoo)
 
 	handler.ServeHTTP(recorder, req)
@@ -149,16 +145,18 @@ func parseFoo(t *testing.T, recorder *httptest.ResponseRecorder) foo.Foo {
 	return parsedFoo
 }
 
-func buildTestApplication() *server.Application {
+func buildFooHandler() FooHandler {
+	fooRepo := buildFooRepository()
+	return *NewFooHandler(fooRepo)
+}
+
+func buildFooRepository() *foo.InMemoryFooRepository {
 	foo1 := foo.NewFooWithId(1, "One")
 	foo2 := foo.NewFooWithId(2, "Two")
 
-	fooRepo := foo.NewFooRepository()
+	fooRepo := foo.NewInMemoryFooRepository()
 	fooRepo.Save(foo1)
 	fooRepo.Save(foo2)
 
-	application := new(server.Application)
-	application.FooRepository = fooRepo
-
-	return application
+	return fooRepo
 }

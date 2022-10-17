@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"hello-go-rest/internal/model/foo"
-	"hello-go-rest/internal/server"
 
 	"github.com/go-chi/chi/v5"
 
@@ -20,12 +19,12 @@ type FooRequest struct {
 }
 
 type FooHandler struct {
-	fooRepository *foo.FooRepository
+	fooRepository foo.FooRepository
 }
 
-func NewFooHandler(app *server.Application) *FooHandler {
+func NewFooHandler(fooRepository foo.FooRepository) *FooHandler {
 	handler := new(FooHandler)
-	handler.fooRepository = app.FooRepository
+	handler.fooRepository = fooRepository
 	return handler
 }
 

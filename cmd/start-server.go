@@ -16,7 +16,7 @@ func main() {
 
 	app := server.BuildApplication()
 
-	fooHandler := handler.NewFooHandler(app)
+	fooHandler := handler.NewFooHandler(app.FooRepository)
 
 	router := chi.NewRouter()
 
