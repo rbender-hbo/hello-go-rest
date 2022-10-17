@@ -19,6 +19,8 @@ func TestFooRepoSaveWithExistingId(t *testing.T) {
 
 	assert.Equal(t, ok, true)
 	assert.Equal(t, foo, foo2)
+
+	assert.Equal(t, repo.LatestFoo, foo)
 }
 
 func TestFooRepoSaveWithoutId(t *testing.T) {

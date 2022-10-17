@@ -91,7 +91,7 @@ func (handler *FooHandler) PutFoo(writer http.ResponseWriter, request *http.Requ
 
 func (handler *FooHandler) extractId(writer http.ResponseWriter, request *http.Request) (fooId int, err error) {
 	id := chi.URLParam(request, "fooId")
-	log.Printf("Extract ID %s", id)
+	log.Infof("Extract ID %s", id)
 
 	fooId, err = strconv.Atoi(id)
 	if (err != nil) {

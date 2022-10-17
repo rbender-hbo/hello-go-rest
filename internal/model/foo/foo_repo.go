@@ -7,6 +7,7 @@ import (
 type FooRepository struct {
 	fooMap map[int]*Foo
 	nextId int
+	LatestFoo *Foo
 }
 
 func NewFooRepository() *FooRepository {
@@ -25,6 +26,7 @@ func (fooRepo *FooRepository) Save(foo *Foo) {
 		foo.FooId = fooRepo.generateId()
 	}
 	fooRepo.fooMap[foo.FooId] = foo
+	fooRepo.LatestFoo = foo
 }
 
 func (fooRepo *FooRepository) generateId() int {
