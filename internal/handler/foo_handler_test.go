@@ -145,9 +145,9 @@ func parseFoo(t *testing.T, recorder *httptest.ResponseRecorder) foo.Foo {
 	return parsedFoo
 }
 
-func buildFooHandler() FooHandler {
+func buildFooHandler() *FooHandler {
 	fooRepo := buildFooRepository()
-	return *NewFooHandler(fooRepo)
+	return NewFooHandler(fooRepo)
 }
 
 func buildFooRepository() *foo.InMemoryFooRepository {

@@ -6,13 +6,13 @@ Run using `./start.sh`.
 
 Exposes:
 
-- All Foo - http://localhost:8080/foo
-- Individual Foo - http://localhost:8080/foo/{fooId}
+- Get All Foo - GET http://localhost:8080/foo
+- Create New Foo - POST http://localhost:8080/foo
+- Get Individual Foo - GET http://localhost:8080/foo/{fooId}
+- Update Existing Foo - PUT http://localhost:8080/foo/{fooId}
 
 ## TODO
 
-- Handle updating existing Foo objects via PUT
-- Use logging framework
 - Try dependency injection framework
 - Create Makefile
 - Database persistence? (Sqlite?)

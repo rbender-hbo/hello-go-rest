@@ -15,9 +15,18 @@ import (
 func main() {
 
 	app := server.BuildApplication()
-
 	fooHandler := handler.NewFooHandler(app.FooRepository)
 
+	router := buildRouter(fooHandler)
+
+	log.Println("Starting server :8080")
+	err := http.ListenAndServe(":8080", router)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func buildRouter(fooHandler *handler.FooHandler) *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Use(middleware.RequestID)
@@ -34,10 +43,5 @@ func main() {
 			router.Put("/", fooHandler.PutFoo)
 		})
 	})
-
-	log.Println("Starting server :8080")
-	err := http.ListenAndServe(":8080", router)
-	if err != nil {
-		log.Fatal(err)
-	}
+	return router
 }
