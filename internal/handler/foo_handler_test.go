@@ -61,6 +61,22 @@ func TestFooHandlerGetFooById(t *testing.T) {
 	assert.Equal(t, parsedFoo, *foo1)
 }
 
+func TestFooHandlerGetFooByIdReturns404WhenNotFound(t *testing.T) {
+
+	req, _ := http.NewRequest("GET", "/foo/3", nil)
+	req = addUrlParam(req, "fooId", "3")
+
+	recorder := httptest.NewRecorder()
+
+	application := buildTestApplication()
+	fooHandler := NewFooHandler(application)
+	handler := http.HandlerFunc(fooHandler.GetFooById)
+
+	handler.ServeHTTP(recorder, req)
+
+	assert.Equal(t, 404, recorder.Code)
+}
+
 func TestFooHandlerPostFoo(t *testing.T) {
 
 	requestBody := strings.NewReader(`{"name":"PostFoo"}`)
@@ -102,9 +118,26 @@ func TestFooHandlerPutFoo(t *testing.T) {
 	assert.Equal(t, "PutFoo", parsedFoo.Name)
 }
 
-func addUrlParam(request *http.Request, param string, value string) *http.Request {
+func TestFooHandlerPutFooReturns404WhenNotFound(t *testing.T) {
+
+	requestBody := strings.NewReader(`{"name":"PutFoo"}`)
+	req, _ := http.NewRequest("PUT", "/foo/3", requestBody)
+	req = addUrlParam(req, "fooId", "3")
+
+	recorder := httptest.NewRecorder()
+
+	application := buildTestApplication()
+	fooHandler := NewFooHandler(application)
+	handler := http.HandlerFunc(fooHandler.PutFoo)
+
+	handler.ServeHTTP(recorder, req)
+
+	assert.Equal(t, 404, recorder.Code)
+}
+
+func addUrlParam(request *http.Request, name string, value string) *http.Request {
 	routeContext := chi.NewRouteContext()
-	routeContext.URLParams.Add("fooId", "1")
+	routeContext.URLParams.Add(name, value)
 	requestContext := context.WithValue(request.Context(), chi.RouteCtxKey, routeContext)
 	return request.WithContext(requestContext)
 }
