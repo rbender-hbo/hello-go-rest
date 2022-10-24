@@ -72,7 +72,7 @@ func (handler *FooHandler) PutFoo(writer http.ResponseWriter, request *http.Requ
 	}
 
 	fooId, err := handler.extractId(writer, request)
-	if (err != nil) {
+	if err != nil {
 		return
 	}
 
@@ -93,7 +93,7 @@ func (handler *FooHandler) extractId(writer http.ResponseWriter, request *http.R
 	log.Infof("Extract ID %s", id)
 
 	fooId, err = strconv.Atoi(id)
-	if (err != nil) {
+	if err != nil {
 		errorMessage := fmt.Sprintf("Unable to parse id %s", id)
 		log.WithFields(log.Fields{"err": err}).Error(errorMessage)
 		http.Error(writer, errorMessage, 400)

@@ -4,15 +4,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type FooRepository interface{
+type FooRepository interface {
 	Save(*Foo) error
 	FindAll() []*Foo
 	FindById(int) (*Foo, bool)
 }
 
 type InMemoryFooRepository struct {
-	fooMap map[int]*Foo
-	nextId int
+	fooMap    map[int]*Foo
+	nextId    int
 	LatestFoo *Foo
 }
 
