@@ -2,7 +2,7 @@
 
 Uses `chi` library for URL routing.
 
-Run using `./start.sh`.
+Run using `make all` (executes tests first) or `make run`.
 
 Exposes:
 
@@ -14,5 +14,4 @@ Exposes:
 ## TODO
 
 - Try dependency injection framework
-- Create Makefile
 - Database persistence? (Sqlite?)
