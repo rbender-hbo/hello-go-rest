@@ -75,6 +75,22 @@ func TestFooHandlerGetFooByIdReturns404WhenNotFound(t *testing.T) {
 	assert.Equal(t, 404, recorder.Code)
 }
 
+func TestFooHandlerGetFooByIdReturns400WhenIdNotNumber(t *testing.T) {
+
+	req, _ := http.NewRequest("GET", "/foo/z", nil)
+	req = addUrlParam(req, "fooId", "z")
+
+	recorder := httptest.NewRecorder()
+
+	fooHandler := buildFooHandler()
+	handler := http.HandlerFunc(fooHandler.GetFooById)
+
+	handler.ServeHTTP(recorder, req)
+
+	assert.Equal(t, 400, recorder.Code)
+	assert.Equal(t, "Unable to parse id z\n", recorder.Body.String())
+}
+
 func TestFooHandlerPostFoo(t *testing.T) {
 
 	requestBody := strings.NewReader(`{"name":"PostFoo"}`)
