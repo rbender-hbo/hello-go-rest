@@ -15,9 +15,9 @@ func TestFooRepoSaveWithExistingId(t *testing.T) {
 
 	assert.Equal(t, 1, foo.FooId)
 
-	foo2, ok := repo.FindById(1)
+	foo2, err := repo.FindById(1)
 
-	assert.Equal(t, ok, true)
+	assert.Nil(t, err)
 	assert.Equal(t, foo, foo2)
 
 	assert.Equal(t, repo.LatestFoo, foo)
@@ -33,9 +33,9 @@ func TestFooRepoSaveWithoutId(t *testing.T) {
 
 	assert.Equal(t, 1, foo.FooId)
 
-	foo2, ok := repo.FindById(1)
+	foo2, err := repo.FindById(1)
 
-	assert.Equal(t, ok, true)
+	assert.Nil(t, err)
 	assert.Equal(t, foo, foo2)
 }
 
@@ -51,9 +51,9 @@ func TestFooRepoSaveWithoutIdAfterSavingWithId(t *testing.T) {
 
 	assert.Equal(t, 4, foo2.FooId)
 
-	foundFoo, ok := repo.FindById(4)
+	foundFoo, err := repo.FindById(4)
 
-	assert.Equal(t, ok, true)
+	assert.Nil(t, err)
 	assert.Equal(t, foundFoo, foo2)
 }
 
@@ -61,9 +61,9 @@ func TestFooRepoFindByIdNotFound(t *testing.T) {
 
 	repo := NewInMemoryFooRepository()
 
-	foo, ok := repo.FindById(1)
+	foo, err := repo.FindById(1)
 
-	assert.Equal(t, ok, false)
+	assert.Nil(t, err)
 	assert.Nil(t, foo)
 }
 
@@ -78,7 +78,8 @@ func TestFooRepoFindAll(t *testing.T) {
 	repo.Save(foo2)
 	repo.Save(foo3)
 
-	allFoo := repo.FindAll()
+	allFoo, err := repo.FindAll()
 
 	assert.Equal(t, 3, len(allFoo))
+	assert.Nil(t, err)
 }

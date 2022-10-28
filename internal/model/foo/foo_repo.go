@@ -6,8 +6,8 @@ import (
 
 type FooRepository interface {
 	Save(*Foo) error
-	FindAll() []*Foo
-	FindById(int) (*Foo, bool)
+	FindAll() ([]*Foo, error)
+	FindById(int) (*Foo, error)
 }
 
 type InMemoryFooRepository struct {
@@ -44,15 +44,15 @@ func (fooRepo *InMemoryFooRepository) generateId() int {
 	return id
 }
 
-func (fooRepo *InMemoryFooRepository) FindAll() []*Foo {
+func (fooRepo *InMemoryFooRepository) FindAll() ([]*Foo, error) {
 	values := make([]*Foo, 0, len(fooRepo.fooMap))
 	for _, value := range fooRepo.fooMap {
 		values = append(values, value)
 	}
-	return values
+	return values, nil
 }
 
-func (fooRepo *InMemoryFooRepository) FindById(fooId int) (foo *Foo, ok bool) {
-	foo, ok = fooRepo.fooMap[fooId]
-	return foo, ok
+func (fooRepo *InMemoryFooRepository) FindById(fooId int) (*Foo, error) {
+	foo := fooRepo.fooMap[fooId]
+	return foo, nil
 }

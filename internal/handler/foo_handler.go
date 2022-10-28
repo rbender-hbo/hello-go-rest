@@ -30,7 +30,13 @@ func NewFooHandler(fooRepository foo.FooRepository) *FooHandler {
 
 func (handler *FooHandler) GetAllFoo(writer http.ResponseWriter, request *http.Request) {
 	log.Debug("GetAllFoo")
-	allFoo := handler.fooRepository.FindAll()
+	allFoo, err := handler.fooRepository.FindAll()
+
+	if err != nil {
+		handler.handleError(writer, err, 500)
+		return
+	}
+
 	serializeToJson(writer, allFoo)
 }
 
@@ -116,8 +122,14 @@ func (handler *FooHandler) parseFooRequest(writer http.ResponseWriter, request *
 }
 
 func (handler *FooHandler) findFooById(writer http.ResponseWriter, fooId int) (*foo.Foo, bool) {
-	foo, ok := handler.fooRepository.FindById(fooId)
-	if !ok {
+	foo, err := handler.fooRepository.FindById(fooId)
+
+	if err != nil {
+		handler.handleError(writer, err, 500)
+		return nil, false
+	}
+
+	if foo == nil {
 		errorMessage := fmt.Sprintf("Foo %d not found", fooId)
 		log.Error(errorMessage)
 		http.Error(writer, errorMessage, 404)
@@ -125,6 +137,11 @@ func (handler *FooHandler) findFooById(writer http.ResponseWriter, fooId int) (*
 	}
 
 	return foo, true
+}
+
+func (handler *FooHandler) handleError(writer http.ResponseWriter, err error, code int) {
+	log.Error(err.Error())
+	http.Error(writer, err.Error(), 404)
 }
 
 func serializeToJson(writer http.ResponseWriter, data interface{}) {
