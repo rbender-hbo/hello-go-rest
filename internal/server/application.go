@@ -8,10 +8,13 @@ TODO: Replace with real Dependency Injection framework (dig, wire, etc)
 
 import (
 	"hello-go-rest/internal/model/foo"
+	"hello-go-rest/internal/service"
+	"os"
 )
 
 type Application struct {
 	FooRepository foo.FooRepository
+	ProductService service.ProductService
 }
 
 func BuildApplication() *Application {
@@ -19,7 +22,20 @@ func BuildApplication() *Application {
 	app := new(Application)
 	app.FooRepository = buildFooRepository()
 
+	baseURL := getEnvOrDefault("PRODUCT_BASE_URL", "https://dummyjson.com")
+
+	app.ProductService = *service.NewProductService(baseURL)
+
 	return app
+}
+
+func getEnvOrDefault(name string, defaultValue string) string {
+	value := os.Getenv(name)
+	if value == "" {
+		return defaultValue
+	} else {
+		return value
+	}
 }
 
 func buildFooRepository() foo.FooRepository {

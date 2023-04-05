@@ -16,8 +16,9 @@ func main() {
 
 	app := server.BuildApplication()
 	fooHandler := handler.NewFooHandler(app.FooRepository)
+	productHandler := handler.NewProductHandler(app.ProductService)
 
-	router := buildRouter(fooHandler)
+	router := buildRouter(fooHandler, productHandler)
 
 	log.Println("Starting server :8080")
 	err := http.ListenAndServe(":8080", router)
@@ -26,7 +27,7 @@ func main() {
 	}
 }
 
-func buildRouter(fooHandler *handler.FooHandler) *chi.Mux {
+func buildRouter(fooHandler *handler.FooHandler, productHandler *handler.ProductHandler) *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Use(middleware.RequestID)
@@ -43,5 +44,8 @@ func buildRouter(fooHandler *handler.FooHandler) *chi.Mux {
 			router.Put("/", fooHandler.PutFoo)
 		})
 	})
+
+	router.Get("/product/{productId}", productHandler.GetProduct)
+
 	return router
 }
