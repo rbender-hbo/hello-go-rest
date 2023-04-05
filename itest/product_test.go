@@ -5,6 +5,7 @@ package itest
 import (
 	"encoding/json"
 	"hello-go-rest/internal/service"
+	"hello-go-rest/internal/util"
 	"io/ioutil"
 	"net/http"
 	"testing"
@@ -15,7 +16,9 @@ import (
 
 func TestGetProduct(t *testing.T) {
 
-	wiremockClient := wiremock.NewClient("http://localhost:8081")
+	wiremockURL := util.GetEnvOrDefault("WIREMOCK_URL", "http://localhost:8081")
+
+	wiremockClient := wiremock.NewClient(wiremockURL)
     defer wiremockClient.Reset()
 
     wiremockClient.StubFor(wiremock.Get(wiremock.URLPathEqualTo("/products/1")).

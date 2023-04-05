@@ -1,0 +1,14 @@
+services:
+  main:
+    image: rbender-hbo/hello-go-rest:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - wiremock
+    environment:
+      PRODUCT_BASE_URL: http://wiremock:8080
+
+  wiremock:
+    image: wiremock/wiremock:2.35.0
+    ports:
+      - "8081:8080"
